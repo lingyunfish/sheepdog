@@ -556,6 +556,13 @@ static int local_trace_cat_ops(const struct sd_req *req, struct sd_rsp *rsp, voi
 	return SD_RES_SUCCESS;
 }
 
+static int local_kill_node(const struct sd_req *req, struct sd_rsp *rsp, void *data)
+{
+	sys_stat_set(SD_STATUS_KILLED);
+
+	return SD_RES_SUCCESS;
+}
+
 static int read_copy_from_replica(struct vnode_info *vnodes, uint32_t epoch,
 				  uint64_t oid, char *buf)
 {
@@ -934,6 +941,13 @@ static struct sd_op_template sd_ops[] = {
 		.type = SD_OP_TYPE_LOCAL,
 		.force = 1,
 		.process_main = local_trace_cat_ops,
+	},
+
+	[SD_OP_KILL_NODE] = {
+		.name = "KILL_NODE",
+		.type = SD_OP_TYPE_LOCAL,
+		.force = 1,
+		.process_main = local_kill_node,
 	},
 
 	/* gateway I/O operations */
